@@ -34,7 +34,7 @@ export default {
     }
   },
   mounted () {
-    this.customer()
+    // this.customer()
   }
 }
 </script>
