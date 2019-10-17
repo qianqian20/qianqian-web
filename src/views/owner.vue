@@ -2,6 +2,8 @@
     <div>
         <!-- <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree> -->
         <en-charts :value="Data" title="新增客户"></en-charts>
+           <en-charts :value="Data" title="客户" type="pie"></en-charts>
+        <en-charts :value="Data" title="新增客户" type="line"></en-charts>
     </div>
 </template>
 
@@ -15,7 +17,17 @@ export default {
   data () {
     return {
       // id: ''
-      Data: []
+      Data: [],
+      Data1: [],
+      vehicleInCount: {
+        '2019-10-11': 1,
+        '2019-10-12': 2,
+        '2019-10-13': 5,
+        '2019-10-14': 4,
+        '2019-10-15': 10,
+        '2019-10-16': 6,
+        '2019-10-17': 15
+      }
     }
   },
   methods: {
@@ -34,13 +46,34 @@ export default {
           url: '/dashboard'
         }
       ).then(res => {
-        this.Data = res.data.data[0].customerFrom
-        console.log(res.data.data[0].customerFrom)
+        this.Data1 = Object.entries(res.data.data[0].vehicleInCount).reverse().map(
+          ([name, value]) => {
+            return { name: name.substring(5), value }
+          }
+        )
+        console.log(Object.entries(res.data.data[0].vehicleInCount), this.Data1)
       })
+    },
+    changeData () {
+      this.Data1 = Object.entries(this.vehicleInCount).reverse().map(
+        ([name, value]) => {
+          return { name: name.substring(5), value }
+        }
+      )
+    }
+  },
+  'echarts.vehicleInCount': {},
+  watch: {
+    'Data1': {
+      handler (data) {
+        this.Data = data
+      },
+      deep: true
     }
   },
   mounted () {
-    this.detail()
+    // this.detail()
+    this.changeData()
   }
 }
 </script>
