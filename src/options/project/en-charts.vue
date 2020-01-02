@@ -8,6 +8,7 @@ var echarts = require('echarts/lib/echarts')
 require('echarts/lib/chart/bar')
 require('echarts/lib/chart/line')
 require('echarts/lib/chart/pie')
+require('echarts/lib/chart/scatter')
 // 引入提示框和标题组件
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
@@ -48,9 +49,8 @@ const optionsInit = type => {
       legend: { // 可以通过点击图例控制哪些系列不显示
         // type: 'scroll',
         data: [],
-        bottom: 10,
-        // orient: 'vertical',
-        left: 'center'
+        orient: 'vertical',
+        left: 'left'
       },
       tooltip: {
         formatter: '{a} <br/>{b} : {c} ({d}%)',
@@ -74,24 +74,6 @@ const optionsInit = type => {
           radius: '50%',
           center: ['50%', '60%'],
           data: [],
-          // roseType: 'radius',
-          // label: {
-          //   normal: {
-          //     textStyle: {
-          //       color: '#03b8b3'
-          //     }
-          //   }
-          // },
-          // labelLine: {
-          //   normal: {
-          //     lineStyle: {
-          //       color: '#03b8b3'
-          //     },
-          //     smooth: 0.2,
-          //     length: 10,
-          //     length2: 20
-          //   }
-          // },
           itemStyle: {
             emphasis: {
               shadowBlur: 10,
@@ -126,6 +108,42 @@ const optionsInit = type => {
         type: 'value'
       },
       series: [{ type: 'line', name: '' }]
+    },
+    scatter: {
+      title: {
+        text: '',
+        x: 'center'
+      },
+      clolr: '#c23531',
+      legend: {
+        data: []
+      },
+      tooltip: {
+        formatter: '{a}<br/>{b}:{c}',
+        trigger: 'item',
+        axisPointer: { // 坐标轴指示器，坐标轴触发有效
+          type: 'line' // 默认为直线，可选为：'line' | 'shadow'
+        }
+      },
+      xAxis: {
+        splitLine: {
+          lineStyle: {
+            type: 'dashed'
+          }
+        },
+        type: 'category',
+        data: []
+      },
+      yAxis: {
+        splitLine: {
+          lineStyle: {
+            type: 'dashed'
+          }
+        },
+        scale: true,
+        type: 'value'
+      },
+      series: [{ type: 'scatter', name: '' }]
     }
   }
   return type ? options[type] : {}
@@ -155,8 +173,14 @@ export default {
   },
   data () {
     return {
-      chart: null
+      chart: null,
+      theme: 'light',
+      lastArea: 0
     }
+  },
+
+  mounted () {
+    this.init()
   },
   watch: {
     value: {
@@ -174,9 +198,10 @@ export default {
       let value = this.value.map(item => item.value)
       let options = this.options || optionsInit(type)
       options.legend.data = name
+      options.series[0].name = title || ''
       options.title.text = title || ''
-      if (type === 'bar' || type === 'line') options.xAxis.data = name
-      options.series[0].data = type === 'bar' || type === 'line' ? value : this.value
+      if (type === 'bar' || type === 'line' || type === 'scatter') options.xAxis.data = name
+      options.series[0].data = type === 'bar' || type === 'line' || type === 'scatter' ? value : this.value
       return options
     },
 
@@ -215,9 +240,6 @@ export default {
       this.chart.clear()
       this.chart = null
     }
-  },
-  mounted () {
-    this.init()
   },
   beforeDestroy () {
     if (this.chart) this.destroy()

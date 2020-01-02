@@ -1,33 +1,17 @@
 <template>
   <div id="app" style="height:100%">
-    <el-container style="direction:vertical;border: 1px solid #eee;height:99%" ref="contentScroll">
-      <el-aside width="200px" style="background-color: #fff;height:100%">
-        <el-menu :default-openeds="['1']" v-for="item of menu" :key="item.index">
-          <el-submenu :index="item.index">
-            <template slot="title">
-              <i class="el-icon-message"></i>{{item.message}}
-            </template>
-            <el-submenu :index="outer.index" v-for="outer of item.children" :key="outer.index">
-              <template slot="title">{{outer.message}}</template>
-              <el-menu-item :index="inner.index" v-for="inner of outer.children" :key="inner.index" @click="click(inner)">{{inner.message}}</el-menu-item>
-            </el-submenu>
-          </el-submenu>
-        </el-menu>
-      </el-aside>
-
-      <el-container>
-        <el-header style="text-align: right; font-size: 12px">
-          <el-dropdown>
-            <i class="el-icon-setting" style="margin-right: 15px"></i>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>查看</el-dropdown-item>
-              <el-dropdown-item>新增</el-dropdown-item>
-              <el-dropdown-item>删除</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-          <span>王小虎</span>
+    <el-container style="direction:vertical;height:99%" ref="contentScroll">
+      <el-header style="text-align: right; font-size: 12px">
+         <el-menu class="en-menu">
+           <div>
+             <ul class="en-menu__trunks">
+               <li :class="{ 'en-menu__trunk_active': active === trunk.id }" :key="trunk.id" @click.stop="click(trunk)" @mouseout="mouseout" @mouseover="mouseover(trunk)" class="en-menu__trunk" v-for="trunk of menu">{{ trunk.message }}</li>
+             </ul>
+           </div>
+         </el-menu>
         </el-header>
 
+      <el-container height="100%">
         <el-main>
           <router-view/>
         </el-main>
@@ -42,23 +26,16 @@ body,
 .el-container {
  height: 100%;
 }
-.el-header {
-  background-color: #b3c0d1;
-  color: #333;
-  line-height: 60px;
-}
-
-.el-aside {
-  color: #333;
-}
 </style>
 
 <script>
 import {menu} from './resource/menu'
+let timer
 export default {
   data () {
     return {
-      menu: []
+      menu: [],
+      active: ''
     }
   },
   created () {
@@ -70,7 +47,52 @@ export default {
       if (inner.path) {
         this.$router.push(inner.path)
       }
+    },
+    mouseover (trunk) {
+      clearTimeout(timer)
+      this.branches = trunk.children
+      this.active = trunk.id
+    },
+    mouseout () {
+      timer = setTimeout(this.reset, 500)
+    },
+    reset () {
+      this.branches = []
+      this.active = ''
     }
+  },
+  mounted () {
+    document.addEventListener(
+      'click',
+      () => {
+        clearTimeout(timer)
+        this.reset()
+      }
+    )
   }
 }
 </script>
+<style>
+.en-menu {
+   background-color: #03b8b3;
+  position: relative;
+  padding: 0 20px;
+}
+
+.en-menu__trunks {
+  display: flex;
+  font-size: 14px;
+  line-height: 40px;
+}
+
+.en-menu__trunk {
+  padding: 0 10px;
+  cursor: pointer;
+  list-style:none;
+}
+
+.en-menu__trunk_active {
+  background: #fff;
+  color: #03b8b3;
+}
+</style>

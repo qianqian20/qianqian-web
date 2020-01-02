@@ -1,10 +1,41 @@
 <template>
     <div>
         <!-- <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree> -->
-        <en-charts :value="Data" title="新增客户"></en-charts>
-           <en-charts :value="Data" title="客户" type="pie"></en-charts>
-        <en-charts :value="Data" title="新增客户" type="line"></en-charts>
-    </div>
+        <el-row :gutter="12">
+  <el-col :span="8">
+    <el-card shadow="always">
+     <en-charts :value="Data" title="新增客户"></en-charts>
+    </el-card>
+  </el-col>
+  <el-col :span="8">
+    <el-card shadow="hover">
+      <en-charts :value="Data" title="客户" type="pie"></en-charts>
+    </el-card>
+  </el-col>
+  <el-col :span="8">
+    <el-card shadow="never">
+      <en-charts :value="Data" title="新增客户" type="line"></en-charts>
+    </el-card>
+  </el-col>
+</el-row>
+<el-row :gutter="12">
+<el-col :span="8">
+    <el-card shadow="always">
+     <en-charts :value="Data" title="新增客户"></en-charts>
+    </el-card>
+  </el-col>
+  <el-col :span="8">
+    <el-card shadow="hover">
+      <en-charts :value="Data" title="客户" type="scatter"></en-charts>
+    </el-card>
+  </el-col>
+  <el-col :span="8">
+    <el-card shadow="never">
+      <en-charts :value="Data" title="新增客户" type="line"></en-charts>
+    </el-card>
+  </el-col>
+</el-row>
+</div>
 </template>
 
 <script>
@@ -62,7 +93,7 @@ export default {
       )
     }
   },
-  'echarts.vehicleInCount': {},
+  // 'echarts.vehicleInCount': {},
   watch: {
     'Data1': {
       handler (data) {

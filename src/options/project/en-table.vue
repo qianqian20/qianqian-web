@@ -52,15 +52,16 @@ export default {
   methods: {
     pagingChange (payload) {
       const paging = this.paging
-      this.method(
-        {
-          addition: {
-            ...paging,
-            ...payload
-          },
-          invokedByPagination: true
-        }
-      )
+      this.method(Object.assign(paging, payload))
+      // this.method(
+      //   {
+      //     addition: {
+      //       ...paging,
+      //       ...payload
+      //     },
+      //     invokedByPagination: true
+      //   }
+      // )
     }
   },
   render (h) {
