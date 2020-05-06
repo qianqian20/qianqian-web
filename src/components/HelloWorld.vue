@@ -4,7 +4,9 @@
             <el-table-column prop="name" label="姓名" width="120">
               <el-button slot-scope="{ row }" @click="editClick(row)" type="text">{{ row.name}}</el-button>
             </el-table-column>
-            <el-table-column prop="date" label="日期" width="140"></el-table-column>
+            <el-table-column label="日期" width="140">
+              <template v-slot= "{row}">{{row.name}}</template>
+            </el-table-column>
             <el-table-column prop="address" label="地址"></el-table-column>
           </en-table>
   </div>
@@ -43,7 +45,11 @@ export default {
       })
     },
     editClick (row) {
-      this.$router.push({name: '/owner', params: {id: row.id}})
+      this.$router.push('/detail',
+        vm => {
+          vm.id = row.id
+        }
+      )
     }
   },
   mounted () {
